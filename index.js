@@ -9,7 +9,7 @@ app.use(express.json());
 
 //MongoDB
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.iahawou.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -36,6 +36,14 @@ async function run() {
             const cursor = foodServices.find(query);
             const allServices = await cursor.toArray();
             res.send(allServices);
+        })
+
+        //get specific service
+        app.get('/allServices/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const viewDetails = await foodServices.findOne(query);
+            res.send(viewDetails);
         })
     }
     finally {
